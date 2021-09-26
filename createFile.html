@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+  
+    <div>
+        <label for="">Create folder/file</label><br><br>
+        <input type="radio" value="folder" id="folder" onclick="onCheck(this.value)" checked><label for="html">folder</label><br>
+        <input type="radio" value="file" id="file" onclick="onCheck(this.value)"><label for="html">file</label><br><br>
+        <input type="text" id="fName" autofocuss><br><br>
+    </div>
+    <button onclick="createFile()">Create</button>
+  
+    <script>
+        const electron = require('electron')
+        const {ipcRenderer} = electron
+       
+        const name = document.getElementById('fName')
+        const folder = document.getElementById('folder')
+        const file = document.getElementById('file')
+        var type = 'folder'
+
+        function onCheck(value) {
+            if(value == 'folder') {
+                folder.checked = true
+                file.checked = false
+                type = value
+            } else {
+                folder.checked = false
+                file.checked = true
+                type = value
+            }
+        }
+        function createFile() {
+            if(name.value.trim().length > 0) {
+                ipcRenderer.send('createFile',name.value, type);      
+            } else {
+                alert('please enter file name')
+            }
+            
+        }
+
+        ipcRenderer.on('isCreate', function(e,value) {
+            alert(`name already exites`)
+        })
+    </script>
+</body>
+</html>

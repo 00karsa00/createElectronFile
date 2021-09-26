@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Folder list</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            font-family: sans-serif;
+            font-size: 14px;
+            text-decoration: none;
+            list-style: none;
+            user-select: none;
+        }
+        .container {
+            background-color:white;
+            height: 100vh;
+            width: 100%;
+            padding: 20px;
+            margin-right: 20px;
+            position: fixed;
+            overflow: auto;
+        }
+
+        .create {
+            padding: 10px;
+            background: #fffacc;
+            right: 0;
+            position: fixed;
+        }
+
+        .create:hover {
+            padding: 10px;
+            background: #ffedcc;
+            right: 0;
+            position: fixed;
+        }
+
+        ul {
+            background:white;
+            padding: 20px;
+        }
+
+        ul li {
+            background: #cce5ff;
+            margin: 5px;
+            padding: 10px;
+            text-decoration: none;
+        }
+    </style>
+</head>
+    <div class="container">
+        <div class="create" id='createBtn'onclick="createFile()">
+            Create file/folder
+        </div>
+        <button id="upload">Select File</button>
+        <ul></ul>    
+    </div>
+    <script>
+        const electron = require('electron')
+        const {ipcRenderer,dialog} = electron
+       
+        const ul = document.querySelector('ul')
+        const cbtn = document.querySelector('#createBtn')
+        cbtn.style.display = 'none'
+
+        ipcRenderer.on('list', function(e, item) {
+            ul.innerHTML = '';
+            cbtn.style.display = 'block'
+            item.map(item1 => {
+                const li = document.createElement('li')
+                const itemt = document.createTextNode(item1)
+                li.appendChild(itemt)
+                ul.appendChild(li)
+            })
+        })
+
+        const buttonCreated = document.getElementById('upload')
+        const createFo = document.getElementById('')
+        buttonCreated.addEventListener('click', function(event) {
+            ipcRenderer.send('open-file');
+        })
+
+        function createFile() {
+            ipcRenderer.send('create-file');
+        }
+
+        ipcRenderer.on('selected-file', function(event, path) {
+            console.log(path)
+        })
+    </script>
+</body>
+</html>
